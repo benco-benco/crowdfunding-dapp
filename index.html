@@ -9,22 +9,38 @@
 <body>
     <div class="container">
         <h1>Crowdfunding DApp</h1>
+        
+        <!-- Section for showing contract info (Target Amount, Time Left, Contributions) -->
         <div id="status">
             <p>Target Amount: <span id="targetAmount"></span> ETH</p>
             <p>Time Left: <span id="timeLeft"></span> seconds</p>
             <p>Current Contributions: <span id="currentContributions"></span> ETH</p>
         </div>
-        <div>
+        
+        <!-- Start a new crowdfunding campaign (visible for the auditor only) -->
+        <div id="startCampaignSection">
+            <input type="number" id="fundGoal" placeholder="Set Fund Goal in ETH" />
+            <input type="number" id="campaignDuration" placeholder="Duration in days" />
+            <button id="startCampaignButton">Start Campaign</button>
+        </div>
+
+        <!-- Section for contributing to the campaign -->
+        <div id="contributeSection">
             <input type="number" id="contributeAmount" placeholder="Amount to contribute in ETH" />
             <button id="contributeButton">Contribute</button>
         </div>
+        
+        <!-- Refund Button (for contributors if campaign fails) -->
         <div>
             <button id="refundButton">Refund</button>
         </div>
+        
+        <!-- Show Contract Address -->
         <div>
             <p>Contract Address: <span id="contractAddress"></span></p>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
     <script src="app.js"></script>
 </body>
