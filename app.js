@@ -65,7 +65,7 @@ const contractABI = [
 ];
 
 // Contract address (the one from Truffle deployment)
-const contractAddress = "0x81D592Ef9549875CDb2FC85C218FAd3090983c20";
+const contractAddress = "0x57c101f2b149C86d56ecC820EaE23df95754105F";
 
 // Create contract instance
 const crowdfundingContract = new web3.eth.Contract(contractABI, contractAddress);
@@ -88,7 +88,7 @@ async function updateContractInfo() {
     document.getElementById("timeLeft").innerText = timeLeft;
 }
 
-/// Handle start campaign button click
+// Handle start campaign button click
 document.getElementById("startCampaignButton").addEventListener("click", async () => {
     const fundGoal = document.getElementById("fundGoal").value;
     const campaignDuration = document.getElementById("campaignDuration").value;
@@ -98,10 +98,12 @@ document.getElementById("startCampaignButton").addEventListener("click", async (
         const durationInSeconds = campaignDuration * 24 * 60 * 60; // Convert days to seconds
 
         try {
-            await crowdfundingContract.methods.startCampaign(userAccount, fundGoalWei, durationInSeconds)
+            await crowdfundingContract.methods.startCampaign()
                 .send({ from: userAccount });
             alert("Campaign started successfully!");
-            updateContractInfo(); // Refresh the contract info after starting the campaign
+
+            // Update the contract info (refresh status)
+            updateContractInfo();
         } catch (error) {
             console.error(error);
             alert("An error occurred while starting the campaign.");
@@ -110,15 +112,29 @@ document.getElementById("startCampaignButton").addEventListener("click", async (
 });
 
 
+
 // Contribute to the campaign
 document.getElementById("contributeButton").addEventListener("click", async () => {
     const amount = document.getElementById("contributeAmount").value;
     if (amount && !isNaN(amount)) {
         const weiAmount = web3.utils.toWei(amount, "ether");
-        await crowdfundingContract.methods.contribute().send({ from: userAccount, value: weiAmount });
-        updateContractInfo(); // Refresh contract info
+
+        try {
+            await crowdfundingContract.methods.contribute()
+                .send({ from: userAccount, value: weiAmount });
+            alert("Contribution successful!");
+
+            // Refresh contract info after contribution
+            updateContractInfo();
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred while contributing.");
+        }
+    } else {
+        alert("Please enter a valid amount.");
     }
 });
+
 
 // Refund button (for contributors if campaign fails)
 document.getElementById("refundButton").addEventListener("click", async () => {
@@ -128,3 +144,29 @@ document.getElementById("refundButton").addEventListener("click", async () => {
 
 // Initial update of contract info
 updateContractInfo();
+
+// Call this function to load active campaigns
+listActiveCampaigns();
+
+
+async function listActiveCampaigns() {
+    const totalCampaigns = await crowdfundingContract.methods.totalCampaigns().call();
+    const activeCampaigns = [];
+
+    for (let i = 0; i < totalCampaigns; i++) {
+        const campaign = await crowdfundingContract.methods.campaigns(i).call();
+        if (campaign.isActive) {
+            activeCampaigns.push(campaign);
+        }
+    }
+
+    // Display the active campaigns in the UI
+    const campaignList = document.getElementById("campaignList");
+    campaignList.innerHTML = ""; // Clear previous list
+
+    activeCampaigns.forEach(campaign => {
+        const listItem = document.createElement("li");
+        listItem.innerText = `Campaign by ${campaign.owner} | Goal: ${web3.utils.fromWei(campaign.targetAmount, "ether")} ETH | Raised: ${web3.utils.fromWei(campaign.raisedAmount, "ether")} ETH`;
+        campaignList.appendChild(listItem);
+    });
+}
