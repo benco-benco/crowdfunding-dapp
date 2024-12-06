@@ -88,17 +88,27 @@ async function updateContractInfo() {
     document.getElementById("timeLeft").innerText = timeLeft;
 }
 
-// Start a new crowdfunding campaign (only accessible by auditor)
+/// Handle start campaign button click
 document.getElementById("startCampaignButton").addEventListener("click", async () => {
     const fundGoal = document.getElementById("fundGoal").value;
-    const duration = document.getElementById("campaignDuration").value * 60 * 60 * 24; // Duration in seconds
+    const campaignDuration = document.getElementById("campaignDuration").value;
 
-    if (fundGoal && duration) {
-        const weiAmount = web3.utils.toWei(fundGoal, "ether");
-        await crowdfundingContract.methods.startCampaign(userAccount, weiAmount, duration).send({ from: userAccount });
-        updateContractInfo(); // Refresh contract info
+    if (fundGoal && campaignDuration) {
+        const fundGoalWei = web3.utils.toWei(fundGoal, "ether");
+        const durationInSeconds = campaignDuration * 24 * 60 * 60; // Convert days to seconds
+
+        try {
+            await crowdfundingContract.methods.startCampaign(userAccount, fundGoalWei, durationInSeconds)
+                .send({ from: userAccount });
+            alert("Campaign started successfully!");
+            updateContractInfo(); // Refresh the contract info after starting the campaign
+        } catch (error) {
+            console.error(error);
+            alert("An error occurred while starting the campaign.");
+        }
     }
 });
+
 
 // Contribute to the campaign
 document.getElementById("contributeButton").addEventListener("click", async () => {
