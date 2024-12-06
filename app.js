@@ -58,7 +58,7 @@ const contractABI = [
 ];
 
 // Contract address (the one from the Truffle deployment output)
-const contractAddress = "0x6Fe9e9e3C67cF860f2Ae6dc9051c58e47f70dD46";
+const contractAddress = "0x81D592Ef9549875CDb2FC85C218FAd3090983c20";
 
 // Create contract instance
 const crowdfundingContract = new web3.eth.Contract(contractABI, contractAddress);
