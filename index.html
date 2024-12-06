@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crowdfunding DApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Crowdfunding DApp</h1>
+        <div id="status">
+            <p>Target Amount: <span id="targetAmount"></span> ETH</p>
+            <p>Time Left: <span id="timeLeft"></span> seconds</p>
+            <p>Current Contributions: <span id="currentContributions"></span> ETH</p>
+        </div>
+        <div>
+            <input type="number" id="contributeAmount" placeholder="Amount to contribute in ETH" />
+            <button id="contributeButton">Contribute</button>
+        </div>
+        <div>
+            <button id="refundButton">Refund</button>
+        </div>
+        <div>
+            <p>Contract Address: <span id="contractAddress"></span></p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
